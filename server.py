@@ -16,8 +16,8 @@ async def archive(request):
     cwd = f'test_photos/{archive_hash}'
     args = ['-r', '-', '.', '-i', '*', ]
 
-    await handler_cwd_name(request, archive_hash)
-    await handler_cwd_exists(request, cwd=cwd)
+    await handle_cwd_name(request, archive_hash)
+    await handle_cwd_exists(request, cwd=cwd)
 
     response = web.StreamResponse()
     response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
