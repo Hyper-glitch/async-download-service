@@ -8,38 +8,19 @@ from aiohttp import web
 INTERVAL_SECS = 1
 
 
-async def uptime_handler(request):
-    response = web.StreamResponse()
-
-    # Большинство браузеров не отрисовывают частично загруженный контент, только если это не HTML.
-    # Поэтому отправляем клиенту именно HTML, указываем это в Content-Type.
-    response.headers['Content-Type'] = 'text/html'
-
-    # Отправляет клиенту HTTP заголовки
-    await response.prepare(request)
-
-    while True:
-        formatted_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        message = f'{formatted_date}<br>'  # <br> — HTML тег переноса строки
-
-        # Отправляет клиенту очередную порцию ответа
-        await response.write(message.encode('utf-8'))
-
-        await asyncio.sleep(INTERVAL_SECS)
-
-
 async def archive(request):
-    response = web.StreamResponse()
-    response.headers['Content-Disposition'] = 'attachment; filename="photos.zip"'
     program = 'zip'
-    args = ['-', 'test_photos', '-r']
     bytes_portion = 100000
-    archive_hash = request.match_info.get('archive_hash', 'unknown')
+    archive_name = 'photos.zip'
+    cwd = 'test_photos'
+    archive_hash = request.match_info.get('archive_hash')
+    args = ['-', f'{archive_hash}', '-r']
+
+    response = web.StreamResponse()
+    response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
 
     await response.prepare(request)
-
-    content = b''
-    process = await asyncio.create_subprocess_exec(program, *args, stdout=subprocess.PIPE)
+    process = await asyncio.create_subprocess_exec(program, *args, stdout=subprocess.PIPE, cwd=cwd)
 
     while not process.stdout.at_eof():
         content = await process.stdout.read(n=bytes_portion)
