@@ -1,11 +1,10 @@
 import asyncio
-import os
+import logging
 from asyncio import subprocess
 
-import aiofiles
-from aiohttp import web
+from aiohttp import web, ClientConnectionError
 
-INTERVAL_SECS = 1
+from handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
 
 
 async def archive(request):
@@ -26,32 +25,28 @@ async def archive(request):
     process = await asyncio.create_subprocess_exec(program, *args, stdout=subprocess.PIPE, cwd=cwd)
 
     while not process.stdout.at_eof():
+        logging.info('Sending archive chunk ...')
         content = await process.stdout.read(n=bytes_portion)
-        await response.write(content)
+        try:
+            await response.write(content)
+        except (web.HTTPRequestTimeout, ClientConnectionError) as exc:
+            logging.error(exc.text)
+            raise exc
 
     return response
 
 
-async def handle_cwd_exists(request, cwd):
-    if not os.path.exists(cwd):
-        raise web.HTTPNotFound(text='Архив не существует или был удален.')
-
-
-async def handle_cwd_name(request, archive_hash):
-    if archive_hash == '.' or archive_hash == '..':
-        raise web.HTTPNotImplemented(text='Архив с катологом "." или ".." не может быть создан.')
-
-
-async def handle_index_page(request):
-    async with aiofiles.open('index.html', mode='r') as index_file:
-        index_contents = await index_file.read()
-    return web.Response(text=index_contents, content_type='text/html')
-
-
-if __name__ == '__main__':
+def main():
+    logging.basicConfig(
+        format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
+    )
     app = web.Application()
     app.add_routes([
         web.get('/', handle_index_page),
         web.get('/archive/{archive_hash}/', archive),
     ])
     web.run_app(app)
+
+
+if __name__ == '__main__':
+    main()
