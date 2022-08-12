@@ -33,7 +33,7 @@ async def archive(request):
         logging.error('Download was interrupted: ', exc.text)
         raise exc
     finally:
-        process.kill()
+        await process.communicate()
 
     return response
 
