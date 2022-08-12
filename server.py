@@ -24,14 +24,16 @@ async def archive(request):
     await response.prepare(request)
     process = await asyncio.create_subprocess_exec(program, *args, stdout=subprocess.PIPE, cwd=cwd)
 
-    while not process.stdout.at_eof():
-        logging.info('Sending archive chunk ...')
-        content = await process.stdout.read(n=bytes_portion)
-        try:
+    try:
+        while not process.stdout.at_eof():
+            logging.info('Sending archive chunk ...')
+            content = await process.stdout.read(n=bytes_portion)
             await response.write(content)
-        except (web.HTTPRequestTimeout, ClientConnectionError) as exc:
-            logging.error(exc.text)
-            raise exc
+    except (web.HTTPRequestTimeout, ClientConnectionError) as exc:
+        logging.error('Download was interrupted: ', exc.text)
+        raise exc
+    finally:
+        process.kill()
 
     return response
 
