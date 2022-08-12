@@ -1,10 +1,12 @@
 import asyncio
 import logging
 from asyncio import subprocess
+from pathlib import PurePath
 
 from aiohttp import web, ClientConnectionError
 
 from handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
+from settings import RESPONSE_DELAY, ENABLE_LOGGING, PHOTOS_DIR
 
 
 async def archive(request):
@@ -12,7 +14,8 @@ async def archive(request):
     bytes_portion = 100000
     archive_name = 'photos.zip'
     archive_hash = request.match_info.get('archive_hash')
-    cwd = f'test_photos/{archive_hash}'
+
+    cwd = PurePath(PHOTOS_DIR, archive_hash)
     args = ['-r', '-', '.', '-i', '*', ]
 
     await handle_cwd_name(request, archive_hash)
@@ -29,6 +32,7 @@ async def archive(request):
             logging.info('Sending archive chunk ...')
             content = await process.stdout.read(n=bytes_portion)
             await response.write(content)
+            await asyncio.sleep(RESPONSE_DELAY)
     except (web.HTTPRequestTimeout, ClientConnectionError) as exc:
         logging.error('Download was interrupted: ', exc.text)
         raise exc
@@ -39,9 +43,10 @@ async def archive(request):
 
 
 def main():
-    logging.basicConfig(
-        format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
-    )
+    if ENABLE_LOGGING:
+        logging.basicConfig(
+            format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
+        )
     app = web.Application()
     app.add_routes([
         web.get('/', handle_index_page),
