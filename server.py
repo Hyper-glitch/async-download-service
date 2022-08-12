@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import logging
 from asyncio import subprocess
@@ -42,17 +43,29 @@ async def archive(request):
     return response
 
 
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-H', '--hostname', help='TCP/IP hostname to serve on (default: %(default)r)', default='localhost',
+    )
+    parser.add_argument(
+        '-P', '--port', help='TCP/IP port to serve on (default: %(default)r)', type=int, default='8080',
+    )
+    return parser.parse_args()
+
+
 def main():
     if ENABLE_LOGGING:
         logging.basicConfig(
             format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
         )
+    args = create_parser()
     app = web.Application()
     app.add_routes([
         web.get('/', handle_index_page),
         web.get('/archive/{archive_hash}/', archive),
     ])
-    web.run_app(app)
+    web.run_app(app=app, host=args.hostname, port=args.port)
 
 
 if __name__ == '__main__':
