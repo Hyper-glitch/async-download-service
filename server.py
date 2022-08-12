@@ -1,4 +1,5 @@
 import asyncio
+import os
 from asyncio import subprocess
 
 import aiofiles
@@ -14,6 +15,12 @@ async def archive(request):
     archive_hash = request.match_info.get('archive_hash')
     cwd = f'test_photos/{archive_hash}'
     args = ['-r', '-', '.', '-i', '*', ]
+
+    if archive_hash == '.' or archive_hash == '..':
+        raise web.HTTPNotImplemented(text='Архив с катологом "." или ".." не может быть создан.')
+
+    if not os.path.exists(cwd):
+        raise web.HTTPNotFound(text='Архив не существует или был удален.')
 
     response = web.StreamResponse()
     response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
