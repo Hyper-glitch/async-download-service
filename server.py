@@ -16,11 +16,8 @@ async def archive(request):
     cwd = f'test_photos/{archive_hash}'
     args = ['-r', '-', '.', '-i', '*', ]
 
-    if archive_hash == '.' or archive_hash == '..':
-        raise web.HTTPNotImplemented(text='Архив с катологом "." или ".." не может быть создан.')
-
-    if not os.path.exists(cwd):
-        raise web.HTTPNotFound(text='Архив не существует или был удален.')
+    await handler_cwd_name(request, archive_hash)
+    await handler_cwd_exists(request, cwd=cwd)
 
     response = web.StreamResponse()
     response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
@@ -33,6 +30,16 @@ async def archive(request):
         await response.write(content)
 
     return response
+
+
+async def handle_cwd_exists(request, cwd):
+    if not os.path.exists(cwd):
+        raise web.HTTPNotFound(text='Архив не существует или был удален.')
+
+
+async def handle_cwd_name(request, archive_hash):
+    if archive_hash == '.' or archive_hash == '..':
+        raise web.HTTPNotImplemented(text='Архив с катологом "." или ".." не может быть создан.')
 
 
 async def handle_index_page(request):
