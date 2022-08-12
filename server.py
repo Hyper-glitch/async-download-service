@@ -1,5 +1,4 @@
 import asyncio
-import datetime
 from asyncio import subprocess
 
 import aiofiles
@@ -12,9 +11,9 @@ async def archive(request):
     program = 'zip'
     bytes_portion = 100000
     archive_name = 'photos.zip'
-    cwd = 'test_photos'
     archive_hash = request.match_info.get('archive_hash')
-    args = ['-', f'{archive_hash}', '-r']
+    cwd = f'test_photos/{archive_hash}'
+    args = ['-r', '-', '.', '-i', '*', ]
 
     response = web.StreamResponse()
     response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
