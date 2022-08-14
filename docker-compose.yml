@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  web:
+    build: .
+    restart: on-failure
+    network_mode: 'host'
+    ports:
+      - '8000:${PORT}'
+    container_name: async_download_service
+    command: 'python3 server.py -P ${PORT}'
