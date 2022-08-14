@@ -61,7 +61,7 @@ Run with a docker compose with the following command:
  docker compose --env-file .docker_env up -d
  ```
 
-После этого перенаправить на микросервис запросы, начинающиеся с `/archive/`. Например:
+After that, redirect requests to the microservice, starts with `/archive/`. For example:
 
 ```
 GET http://host.ru/archive/3bea29ccabbbf64bdebcc055319c5745/
