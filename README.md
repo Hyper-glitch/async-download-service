@@ -40,11 +40,20 @@ python server.py -H 127.0.0.1 -P 7777
 
 Сервер запустится на порту 7777 чтобы проверить его работу перейдите в браузере на страницу [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
 
-## Как развернуть на сервере
+## Как развернуть на сервере с docker compose
+
+Create **.env** file and set the <ins>following environmental variables</ins>:  
+
+| Environmental          | Description                                       |
+|------------------------|---------------------------------------------------|
+| `ENABLE_RESPONSE_DELAY`| add delay for response when download zip file     |       
+| `ENABLE_LOGGING`       | add logging to microservice                       |      
+| `RESPONSE_DELAY`       | amount of delay for response                      |
+| `PHOTOS_DIR`           | directory, where server keeps photos              |
 
 ```bash
-python server.py
-```
+ docker compose --env-file .docker_env up -d
+ ```
 
 После этого перенаправить на микросервис запросы, начинающиеся с `/archive/`. Например:
 
