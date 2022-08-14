@@ -21,7 +21,7 @@ The archive is protected from unauthorized access by a hash in the download link
 
 
 ## Setup
-The microservice requires a Python version of at least 3.6.
+The microservice requires a Python version at least 3.6.
 
 ```bash
 pip install -r requirements.txt && apt install zip
@@ -37,7 +37,7 @@ python server.py
 python server.py -H 127.0.0.1 -P 7777
 ```
 
-The server will start on port 7777 to check its operation go to the page in the browser [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
+The server will start on port 7777 to check it go to the page in the browser [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
 
 ## Start on a remote server with docker compose.
 
