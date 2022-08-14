@@ -1,12 +1,12 @@
-# Микросервис для скачивания файлов
+# Microservice for downloading files asynchronously
 
-Микросервис помогает работе основного сайта, сделанного на CMS и обслуживает
-запросы на скачивание архивов с файлами. Микросервис не умеет ничего, кроме упаковки файлов
-в архив. Закачиваются файлы на сервер через FTP или админку CMS.
+Microservice helps the work of the main site made on CMS and serves
+requests to download archives with files. Microservice can do nothing but pack files
+to the archive. Files are uploaded to the server via FTP or CMS admin panel.
 
-Создание архива происходит на лету по запросу от пользователя. Архив не сохраняется на диске, вместо этого по мере упаковки он сразу отправляется пользователю на скачивание.
+The creation of the archive occurs on the fly at the request of the user. The archive is not stored on disk; instead, as it is packaged, it is immediately sent to the user for download.
 
-От неавторизованного доступа архив защищен хешом в адресе ссылки на скачивание, например: `http://host.ru/archive/3bea29ccabbbf64bdebcc055319c5745/`. Хеш задается названием каталога с файлами, выглядит структура каталога так:
+The archive is protected from unauthorized access by a hash in the download link address, for example: `http://host.ru/archive/3bea29ccabbbf64bdebcc055319c5745/`. The hash is given by the name of the directory with files, the directory structure looks like this:
 
 ```
 - photos
@@ -20,27 +20,26 @@
 ```
 
 
-## Установка
-
-Для работы микросервиса нужен Python версии не ниже 3.6.
+## Setup
+The microservice requires a Python version of at least 3.6.
 
 ```bash
 pip install -r requirements.txt && apt install zip
 ```
 
-## Запуск
+## Running
 ```bash
 python server.py
 ```
 
-## Запуск с флагами hostname, port
+## Running with flags hostname, port
 ```bash
 python server.py -H 127.0.0.1 -P 7777
 ```
 
-Сервер запустится на порту 7777 чтобы проверить его работу перейдите в браузере на страницу [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
+The server will start on port 7777 to check its operation go to the page in the browser [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
 
-## Start on remote server with docker compose
+## Start on a remote server with docker compose.
 
 Create **.env** file and set the <ins>following environmental variables</ins>:  
 | Environmental          | Description                                       |
