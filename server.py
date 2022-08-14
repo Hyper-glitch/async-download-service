@@ -19,7 +19,7 @@ async def archive(request):
     cwd = PurePath(PHOTOS_DIR, archive_hash)
     args = ['-r', '-', '.', '-i', '*', ]
 
-    await handle_cwd_name(request, archive_hash)
+    await handle_cwd_name(request, archive_hash=archive_hash)
     await handle_cwd_exists(request, cwd=cwd)
 
     response = web.StreamResponse()
