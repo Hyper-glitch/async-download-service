@@ -25,7 +25,7 @@
 Для работы микросервиса нужен Python версии не ниже 3.6.
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt && apt install zip
 ```
 
 ## Запуск
