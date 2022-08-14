@@ -20,35 +20,50 @@
 ```
 
 
-## Как установить
+## Установка
 
 Для работы микросервиса нужен Python версии не ниже 3.6.
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt && apt install zip
 ```
 
-## Как запустить
-
+## Запуск
 ```bash
 python server.py
 ```
 
-Сервер запустится на порту 8080, чтобы проверить его работу перейдите в браузере на страницу [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
-
-## Как развернуть на сервере
-
+## Запуск с флагами hostname, port
 ```bash
-python server.py
+python server.py -H 127.0.0.1 -P 7777
 ```
 
-После этого перенаправить на микросервис запросы, начинающиеся с `/archive/`. Например:
+Сервер запустится на порту 7777 чтобы проверить его работу перейдите в браузере на страницу [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
+
+## Start on remote server with docker compose
+
+Create **.env** file and set the <ins>following environmental variables</ins>:  
+| Environmental          | Description                                       |
+|------------------------|---------------------------------------------------|
+| `ENABLE_RESPONSE_DELAY`| add delay for response when download zip file     |       
+| `ENABLE_LOGGING`       | add logging to microservice                       |      
+| `RESPONSE_DELAY`       | amount of delay for response                      |
+| `PHOTOS_DIR`           | directory, where server keeps photos              |
+
+Create **.docker_env** file for docker compose and set the <ins>following environmental variables</ins>:
+| Environmental| Description                                       |
+|--------------|---------------------------------------------------|
+| `PORT`       | 4 digits port number for microservice             | 
+
+Run with a docker compose with the following command:
+
+```bash
+ docker compose --env-file .docker_env up -d
+ ```
+
+After that, redirect requests to the microservice, starts with `/archive/`. For example:
 
 ```
 GET http://host.ru/archive/3bea29ccabbbf64bdebcc055319c5745/
 GET http://host.ru/archive/af1ad8c76fda2e48ea9aed2937e972ea/
 ```
-
-# Цели проекта
-
-Код написан в учебных целях — это урок в курсе по Python и веб-разработке на сайте [Devman](https://dvmn.org).
