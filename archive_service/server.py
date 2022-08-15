@@ -14,8 +14,14 @@ from settings import RESPONSE_DELAY, ENABLE_LOGGING, PHOTOS_DIR
 
 async def archive(request: Request) -> StreamResponse:
     """Archive files in stream and send it to the client side.
-    params request: request from client that trigger this endpoint.
-    return response: response with content from a server.
+
+    Args:
+        request: request from client that trigger this endpoint.
+    Raises:
+        HTTPRequestTimeout: if request timed out.
+        ClientConnectionError: if client connection lost.
+    Returns:
+        response: response with content from a server.
     """
     program = 'zip'
     bytes_portion = 100000
@@ -51,7 +57,9 @@ async def archive(request: Request) -> StreamResponse:
 
 def create_parser() -> argparse.Namespace:
     """Create arg parser and add arguments.
-    :return namespace:
+
+    Returns:
+        namespace: values or arguments, that parsed.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -64,7 +72,11 @@ def create_parser() -> argparse.Namespace:
 
 
 def main() -> None:
-    """Main function that set up logging, add arg parser and create and run the server."""
+    """Main function that set up logging, add arg parser and create and run the server.
+
+    Returns:
+        None
+    """
     if ENABLE_LOGGING:
         logging.basicConfig(
             format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
