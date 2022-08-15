@@ -2,7 +2,6 @@
 import argparse
 import asyncio
 import logging
-from asyncio import subprocess
 from pathlib import PurePath
 
 from aiohttp import web, ClientConnectionError
@@ -38,7 +37,7 @@ async def archive(request: Request) -> StreamResponse:
     response.headers['Content-Disposition'] = f'attachment; filename="{archive_name}"'
 
     await response.prepare(request)
-    process = await asyncio.create_subprocess_exec(program, *args, stdout=subprocess.PIPE, cwd=cwd)
+    process = await asyncio.create_subprocess_exec(program, *args, stdout=asyncio.subprocess.PIPE, cwd=cwd)
 
     try:
         while not process.stdout.at_eof():
