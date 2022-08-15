@@ -14,7 +14,7 @@ async def handle_cwd_exists(request: Request, cwd: PurePath) -> None:
         request: request from client that trigger this endpoint.
         cwd: current work directory.
     Raises:
-     HTTPNotFound: if the archive does not exist or has been deleted.
+        HTTPNotFound: if the archive does not exist or has been deleted.
     """
     if not os.path.exists(cwd):
         raise web.HTTPNotFound(text='The archive does not exist or has been deleted.')
