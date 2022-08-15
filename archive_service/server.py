@@ -19,6 +19,7 @@ async def archive(request: Request) -> StreamResponse:
     Raises:
         HTTPRequestTimeout: if request timed out.
         ClientConnectionError: if client connection lost.
+        HTTPNotFound: if archive_hash does not exist in url scheme.
     Returns:
         response: response with content from a server.
     """
@@ -26,6 +27,9 @@ async def archive(request: Request) -> StreamResponse:
     bytes_portion = 100000
     archive_name = 'photos.zip'
     archive_hash = request.match_info.get('archive_hash')
+
+    if not archive_hash:
+        raise web.HTTPNotFound(text='There is no "archive_hash" in url scheme.')
 
     cwd = PurePath(PHOTOS_DIR, archive_hash)
     args = ['-r', '-', '.', '-i', '*', ]
@@ -44,8 +48,11 @@ async def archive(request: Request) -> StreamResponse:
             logging.info('Sending archive chunk ...')
             content = await process.stdout.read(n=bytes_portion)
             await response.write(content)
-            await asyncio.sleep(RESPONSE_DELAY)
-    except (web.HTTPRequestTimeout, ClientConnectionError) as exc:
+
+            if RESPONSE_DELAY:
+                await asyncio.sleep(RESPONSE_DELAY)
+
+    except (web.HTTPRequestTimeout, ClientConnectionError, asyncio.CancelledError) as exc:
         logging.error('Download was interrupted: ', exc.text)
         raise exc
     finally:
