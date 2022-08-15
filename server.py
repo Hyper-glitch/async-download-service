@@ -1,3 +1,4 @@
+"""The main module for run the server."""
 import argparse
 import asyncio
 import logging
@@ -5,12 +6,17 @@ from asyncio import subprocess
 from pathlib import PurePath
 
 from aiohttp import web, ClientConnectionError
+from aiohttp.abc import StreamResponse, Request
 
 from handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
 from settings import RESPONSE_DELAY, ENABLE_LOGGING, PHOTOS_DIR
 
 
-async def archive(request):
+async def archive(request: Request) -> StreamResponse:
+    """Archive files in stream and send it to the client side.
+    params request: request from client that trigger this endpoint.
+    return response: response with content from a server.
+    """
     program = 'zip'
     bytes_portion = 100000
     archive_name = 'photos.zip'
@@ -43,7 +49,10 @@ async def archive(request):
     return response
 
 
-def create_parser():
+def create_parser() -> argparse.Namespace:
+    """Create arg parser and add arguments.
+    :return namespace:
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-H', '--hostname', help='TCP/IP hostname to serve on (default: %(default)r)', default='localhost',
@@ -54,7 +63,8 @@ def create_parser():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
+    """Main function that set up logging, add arg parser and create and run the server."""
     if ENABLE_LOGGING:
         logging.basicConfig(
             format=u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level=logging.INFO,
