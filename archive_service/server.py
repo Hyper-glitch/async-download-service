@@ -8,7 +8,7 @@ from pathlib import PurePath
 from aiohttp import web, ClientConnectionError
 from aiohttp.abc import StreamResponse, Request
 
-from handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
+from archive_service.handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
 from settings import RESPONSE_DELAY, ENABLE_LOGGING, PHOTOS_DIR
 
 
