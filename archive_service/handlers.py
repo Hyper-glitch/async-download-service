@@ -1,12 +1,13 @@
 """Module for microservice handlers."""
 import os
+from pathlib import PurePath
 
 import aiofiles
 from aiohttp import web
 from aiohttp.abc import Request, StreamResponse
 
 
-async def handle_cwd_exists(request: Request, cwd: str) -> None:
+async def handle_cwd_exists(request: Request, cwd: PurePath) -> None:
     """Check that archive exists or not.
 
     Args:
