@@ -7,7 +7,7 @@ from pathlib import PurePath
 from aiohttp import web, ClientConnectionError
 from aiohttp.abc import StreamResponse, Request
 
-from archive_service.handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
+from handlers import handle_index_page, handle_cwd_name, handle_cwd_exists
 from settings import RESPONSE_DELAY, ENABLE_LOGGING, PHOTOS_DIR
 
 
@@ -26,10 +26,7 @@ async def archive(request: Request) -> StreamResponse:
     program = 'zip'
     bytes_portion = 100000
     archive_name = 'photos.zip'
-    archive_hash = request.match_info.get('archive_hash')
-
-    if not archive_hash:
-        raise web.HTTPNotFound(text='There is no "archive_hash" in url scheme.')
+    archive_hash = request.match_info['archive_hash']
 
     cwd = PurePath(PHOTOS_DIR, archive_hash)
     args = ['-r', '-', '.', '-i', '*', ]
@@ -56,7 +53,9 @@ async def archive(request: Request) -> StreamResponse:
         logging.error('Download was interrupted: ', exc.text)
         raise exc
     finally:
-        await process.communicate()
+        if process.returncode is None:
+            process.kill()
+            _, _ = await process.communicate()
 
     return response
 
