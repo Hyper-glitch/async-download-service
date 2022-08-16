@@ -55,7 +55,7 @@ async def archive(request: Request) -> StreamResponse:
     finally:
         if process.returncode is None:
             process.kill()
-            _, _ = await process.communicate()
+            await process.communicate()
 
     return response
 
