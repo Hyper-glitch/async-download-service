@@ -41,6 +41,6 @@ async def handle_index_page(request: Request) -> StreamResponse:
     Returns:
         response: response with content from a server.
     """
-    async with aiofiles.open('archive_service/index.html', mode='r') as index_file:
+    async with aiofiles.open('index.html', mode='r') as index_file:
         index_contents = await index_file.read()
     return web.Response(text=index_contents, content_type='text/html')
