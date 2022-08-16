@@ -27,6 +27,19 @@ The microservice requires a Python version at least 3.6.
 pip install -r requirements.txt && apt install zip
 ```
 
+## Create **.env** file and set the <ins>following environmental variables</ins>:  
+| Environmental          | Description                                       |
+|------------------------|---------------------------------------------------|
+| `ENABLE_RESPONSE_DELAY`| add delay for response when download zip file     |       
+| `ENABLE_LOGGING`       | add logging to microservice                       |      
+| `RESPONSE_DELAY`       | amount of delay for response                      |
+| `PHOTOS_DIR`           | directory, where server keeps photos              |
+
+## Create **.docker_env** file for docker compose and set the <ins>following environmental variables</ins>:
+| Environmental| Description                                       |
+|--------------|---------------------------------------------------|
+| `PORT`       | 4 digits port number for microservice             | 
+
 ## Running
 ```bash
 python server.py
@@ -37,28 +50,13 @@ python server.py
 python server.py -H 127.0.0.1 -P 7777
 ```
 
-The server will start on port 7777 to check it go to the page in the browser [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
-
-## Start on a remote server with docker compose.
-
-Create **.env** file and set the <ins>following environmental variables</ins>:  
-| Environmental          | Description                                       |
-|------------------------|---------------------------------------------------|
-| `ENABLE_RESPONSE_DELAY`| add delay for response when download zip file     |       
-| `ENABLE_LOGGING`       | add logging to microservice                       |      
-| `RESPONSE_DELAY`       | amount of delay for response                      |
-| `PHOTOS_DIR`           | directory, where server keeps photos              |
-
-Create **.docker_env** file for docker compose and set the <ins>following environmental variables</ins>:
-| Environmental| Description                                       |
-|--------------|---------------------------------------------------|
-| `PORT`       | 4 digits port number for microservice             | 
-
-Run with a docker compose with the following command:
+## Running with a docker compose with the following command:
 
 ```bash
  docker compose --env-file .docker_env up -d
  ```
+
+The server will start on port 7777 to check it go to the page in the browser [http://127.0.0.1:7777/](http://127.0.0.1:7777/).
 
 After that, redirect requests to the microservice, starts with `/archive/`. For example:
 
