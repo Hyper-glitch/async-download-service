@@ -68,7 +68,7 @@ def create_parser() -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-H', '--hostname', help='TCP/IP hostname to serve on (default: %(default)r)', default='localhost',
+        '-H', '--hostname', help='TCP/IP hostname to serve on (default: %(default)r)', default='0.0.0.0',
     )
     parser.add_argument(
         '-P', '--port', help='TCP/IP port to serve on (default: %(default)r)', type=int, default='8080',
